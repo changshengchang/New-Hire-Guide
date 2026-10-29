@@ -73,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
     },
     {
       id: 'zdrive',
-      label: 'Z:\\人事 專區',
+      label: 'Z:\\1.人事室 專區',
       icon: <HardDrive className="w-4 h-4" />,
       activeClasses: 'bg-rose-600 text-white border-rose-700 shadow-xs font-bold',
       hoverClasses: 'hover:bg-rose-50 hover:text-rose-700 text-slate-700',

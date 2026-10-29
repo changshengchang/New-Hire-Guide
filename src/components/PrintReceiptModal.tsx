@@ -139,7 +139,7 @@ export const PrintReceiptModal: React.FC<PrintReceiptModalProps> = ({
               苗栗縣三義鄉公所 新進人員報到自我檢核確認表
             </h1>
             <p className="text-xs text-stone-600 mt-1">
-              人事室承辦電話：(037) 872-801 · 人事室分機：19(主任)、61(協辦人員) · 內部網路人事專區：Z:\人事
+              人事室承辦電話：(037) 872-801 · 人事室分機：19(主任)、61(協辦人員) · 內部網路人事專區：Z:\1.人事室
             </p>
           </div>
 

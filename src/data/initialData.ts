@@ -63,7 +63,7 @@ export const INITIAL_CHECKLIST: ChecklistItem[] = [
   },
   {
     id: 'chk-net-1',
-    title: '連線公所內部網路公用磁碟【Z:\\人事】',
+    title: '連線公所內部網路公用磁碟【Z:\\1.人事室】',
     category: '公所內網',
     description: '於公務電腦掛載 Z 槽，隨時查閱本所人事法規、差勤管理規章及表單下載。',
     requiredFor: 'both',

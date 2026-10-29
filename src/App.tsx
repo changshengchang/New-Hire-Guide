@@ -537,7 +537,7 @@ export default function App() {
                 <span>·</span>
               </>
             )}
-            <span className="bg-slate-800 text-rose-300 px-2 py-0.5 rounded border border-slate-700 font-mono">Z:\人事</span>
+            <span className="bg-slate-800 text-rose-300 px-2 py-0.5 rounded border border-slate-700 font-mono">Z:\1.人事室</span>
             <span>·</span>
             <span className="bg-slate-800 text-purple-300 px-2 py-0.5 rounded border border-slate-700">玉山國旅卡</span>
             <span>·</span>

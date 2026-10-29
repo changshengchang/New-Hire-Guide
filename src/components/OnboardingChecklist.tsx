@@ -48,7 +48,7 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
             歡迎加入三義鄉公所服務團隊
           </h1>
           <p className="text-blue-100 text-sm leading-relaxed mb-4">
-            為協助您順利完成各項到職法定義務與行政手續，本系統彙整了繳交證件、報告表單、三義農會開戶、玉山國旅卡、MyData具結及內部磁碟【Z:\人事】等指引。請依下方檢核項目逐一核對辦理。
+            為協助您順利完成各項到職法定義務與行政手續，本系統彙整了繳交證件、報告表單、三義農會開戶、玉山國旅卡、MyData具結及內部磁碟【Z:\1.人事室】等指引。請依下方檢核項目逐一核對辦理。
           </p>
           <div className="flex items-center gap-4 text-xs text-blue-200 flex-wrap">
             <span className="bg-blue-800/80 px-2.5 py-1 rounded-md border border-blue-600/60">
@@ -204,7 +204,7 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
             <span>公所內部資源</span>
             <span className="text-rose-400 group-hover:translate-x-1 transition-transform">→</span>
           </div>
-          <h3 className="text-base font-bold text-rose-950 mb-2">網路磁碟【Z:\人事】</h3>
+          <h3 className="text-base font-bold text-rose-950 mb-2">網路磁碟【Z:\1.人事室】</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
             公務電腦掛載 Z 槽即可存取差勤管理規則、請假標準作業、公差旅費及各類常用申請單。
           </p>
