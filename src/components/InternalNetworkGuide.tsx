@@ -1,24 +1,14 @@
-import React, { useState } from 'react';
-import { HardDrive, Copy, Check, Phone, ArrowLeft } from 'lucide-react';
+import React from 'react';
+import { HardDrive, Phone, ArrowLeft } from 'lucide-react';
 
 interface InternalNetworkGuideProps {
   onBack?: () => void;
 }
 
 export const InternalNetworkGuide: React.FC<InternalNetworkGuideProps> = ({ onBack }) => {
-  const [copied, setCopied] = useState(false);
-
-  const drivePath = 'Z:\\1.人事室';
-
-  const handleCopyPath = () => {
-    navigator.clipboard.writeText(drivePath);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <div className="space-y-6">
-      {/* Title & Path Card - Rose Theme */}
+      {/* Title Card - Rose Theme */}
       <div className="bg-gradient-to-r from-rose-50 via-orange-50/30 to-white border-2 border-rose-300 rounded-2xl p-5 sm:p-7 shadow-xs">
         {onBack && (
           <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-rose-100">
@@ -36,34 +26,17 @@ export const InternalNetworkGuide: React.FC<InternalNetworkGuideProps> = ({ onBa
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-rose-700 text-xs font-bold">
-              <HardDrive className="w-4 h-4 text-rose-600" />
-              <span>機關內部區域網路 · 資源共享磁碟</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              本所人事相關法令及表件位置：【Z:\1.人事室】
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
-              公所內部公務電腦均已預設掛載或可連線至 <strong>{drivePath}</strong>，同仁可在此隨時查閱各項最新人事相關法令、差勤要點及各類公務表單檔案。
-            </p>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-rose-700 text-xs font-bold">
+            <HardDrive className="w-4 h-4 text-rose-600" />
+            <span>機關內部區域網路 · 資源共享磁碟</span>
           </div>
-
-          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
-            <div className="bg-rose-700 text-white px-5 py-3 rounded-xl flex items-center gap-3 font-mono text-sm sm:text-base font-bold shadow-xs border-2 border-rose-900">
-              <HardDrive className="w-5 h-5 text-rose-200" />
-              <span>{drivePath}</span>
-              <button
-                type="button"
-                onClick={handleCopyPath}
-                className="p-1.5 hover:bg-rose-800 rounded-lg text-rose-200 hover:text-white transition-colors cursor-pointer ml-1"
-                title="複製磁碟路徑"
-              >
-                {copied ? <Check className="w-4 h-4 text-emerald-300 stroke-[3]" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+            本所人事相關法令及表件位置：【Z:\1.人事室】
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
+            公所內部公務電腦均已預設掛載或可連線至 <strong>Z:\1.人事室</strong>，同仁可在此隨時查閱各項最新人事相關法令、差勤要點及各類公務表單檔案。
+          </p>
         </div>
       </div>
 
