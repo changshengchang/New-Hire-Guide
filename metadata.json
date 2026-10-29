@@ -1,0 +1,6 @@
+{
+  "name": "三義鄉公所新進人員指引系統",
+  "description": "苗栗縣三義鄉公所人事室新進人員到職手冊與指引系統，包含證件審查、報告表單下載、環境與樓層課室導覽、農會開戶、玉山國旅卡、MyData具結書及內部磁碟Z槽人事專區指引。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
