@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Landmark, CreditCard, CheckCircle2, Circle, AlertCircle, Copy, Check, MapPin, ExternalLink, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { Landmark, CreditCard, CheckCircle2, Circle, AlertCircle, Copy, Check, MapPin, ShieldCheck, ArrowLeft, KeyRound, FileCheck2 } from 'lucide-react';
 
 interface BankingAndCardViewProps {
   onNavigateTab: (tab: any) => void;
@@ -42,17 +42,17 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
 
         <div className="flex items-center gap-2 text-purple-700 text-xs font-bold mb-1">
           <Landmark className="w-4 h-4 text-purple-600" />
-          <span>金融服務與法定福利 · 薪資開戶及國旅卡</span>
+          <span>金融服務 · 國旅福利 · 自然人憑證</span>
         </div>
         <h2 className="text-xl font-bold text-slate-900">
-          三義鄉農會開戶與玉山國民旅遊卡指引
+          三義鄉農會開戶、玉山國旅卡及自然人憑證申辦指引
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
-          公所各項公務薪資、加班費及年終獎金均由三義鄉農會統一撥付；本所特約國民旅遊卡為玉山銀行發行。
+          公所各項公務薪資由三義鄉農會統一撥付，特約國旅卡為玉山銀行發行；並特別提醒新進人員務必申請<strong>「自然人憑證」</strong>，以利公文辦理及登入行政院人事行政總處 (ECPA) 人事服務網之用。
         </p>
       </div>
 
-      {/* Grid: 2 Primary Sections */}
+      {/* Grid: 2 Primary Sections (Farmers' Assoc & Travel Card) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         {/* Card 1: Sanyi Farmers' Association Payroll Account Opening */}
         <div className="bg-white border border-stone-200 rounded-2xl p-6 shadow-xs space-y-5">
@@ -98,9 +98,7 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
               )}
               <div className="text-xs">
                 <span className="font-semibold text-stone-800">1. 雙證件正本：</span>
-                <span className="text-stone-600">
-                  國民身分證必備 + 第二證件（健保卡或有效駕照）。
-                </span>
+                <span className="text-stone-600"> 國民身分證 ＋ 第二身分證明文件（健保卡或駕照）。</span>
               </div>
             </div>
 
@@ -114,10 +112,8 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
                 <Circle className="w-4 h-4 text-stone-300 mt-0.5 shrink-0" />
               )}
               <div className="text-xs">
-                <span className="font-semibold text-stone-800">2. 任職證明文件：</span>
-                <span className="text-stone-600">
-                  縣府核發之派令正本或本所人事室出具之「新進同仁報到通知單」。
-                </span>
+                <span className="font-semibold text-stone-800">2. 到職證明文件：</span>
+                <span className="text-stone-600"> 機關派令正本、人事到職通知書或報到單（佐證任職公所薪資轉帳）。</span>
               </div>
             </div>
 
@@ -131,8 +127,8 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
                 <Circle className="w-4 h-4 text-stone-300 mt-0.5 shrink-0" />
               )}
               <div className="text-xs">
-                <span className="font-semibold text-stone-800">3. 私人印章：</span>
-                <span className="text-stone-600">個人私章，作為農會開戶印鑑留存。</span>
+                <span className="font-semibold text-stone-800">3. 原留便章（印鑑）：</span>
+                <span className="text-stone-600"> 供活期存款存摺開戶留存印鑑使用。</span>
               </div>
             </div>
 
@@ -146,10 +142,8 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
                 <Circle className="w-4 h-4 text-stone-300 mt-0.5 shrink-0" />
               )}
               <div className="text-xs">
-                <span className="font-semibold text-stone-800">4. 開戶起存現金：</span>
-                <span className="text-stone-600 font-mono tabular-nums">
-                  依法規與農會作業慣例，開戶至少需存入 <strong>1,000 元整</strong>。
-                </span>
+                <span className="font-semibold text-stone-800">4. 開戶起存金：</span>
+                <span className="text-stone-600"> 攜帶現金至少 NT$ 1,000 元整存入開戶。</span>
               </div>
             </div>
 
@@ -163,10 +157,8 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
                 <Circle className="w-4 h-4 text-stone-300 mt-0.5 shrink-0" />
               )}
               <div className="text-xs">
-                <span className="font-semibold text-stone-800">5. 存摺封面影本回傳：</span>
-                <span className="text-stone-600">
-                  開戶完成後，請影印存摺封面交回五樓人事室與主計室建檔入帳。
-                </span>
+                <span className="font-semibold text-stone-800">5. 存摺封面影印交送出納：</span>
+                <span className="text-stone-600"> 辦妥後將存摺封面影本黏貼至「員工薪資轉帳帳戶指定書」送交財行課出納。</span>
               </div>
             </div>
           </div>
@@ -179,10 +171,11 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
                 三義鄉農會本會信用部
               </span>
               <button
+                type="button"
                 onClick={() =>
                   handleCopy('苗栗縣三義鄉廣盛村中正路152號', 'address')
                 }
-                className="text-stone-500 hover:text-stone-900 flex items-center gap-1 text-[11px]"
+                className="text-stone-500 hover:text-stone-900 flex items-center gap-1 text-[11px] cursor-pointer"
               >
                 {copiedText === 'address' ? (
                   <Check className="w-3 h-3 text-emerald-600" />
@@ -221,7 +214,7 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
               <span>本所國旅卡為玉山銀行</span>
             </div>
             <p className="leading-relaxed">
-              三義鄉公所特約國民旅遊卡配合發卡機構為<strong>玉山銀行</strong>。新進同仁到職經銓敘審定後，人事室將登錄同仁資料至行政院人事行政總處「國民旅遊卡檢核系統」，即可申辦玉山國旅卡。
+              三義鄉公所特約國民旅遊卡配合發卡機構為<strong>玉山銀行</strong>。新進同仁到職經銓敘審定後，人事室將登錄同仁資料，即可申辦玉山國旅卡。
             </p>
           </div>
 
@@ -254,15 +247,8 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
             </div>
           </div>
 
-          {/* Inspection and link instructions */}
+          {/* Customer Service Info (Removed inspection text as requested) */}
           <div className="space-y-2.5 pt-2 text-xs text-stone-600">
-            <div className="flex items-start gap-2 bg-stone-50 p-3 rounded-lg border border-stone-100">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0" />
-              <span>
-                <strong>檢核系統登記：</strong>開卡後請至「公務人員國民旅遊卡檢核系統」註冊帳號，確認個人身分證字號與公所機關代碼連結無誤。
-              </span>
-            </div>
-
             <div className="flex items-start gap-2 bg-stone-50 p-3 rounded-lg border border-stone-100">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0" />
               <span>
@@ -273,11 +259,105 @@ export const BankingAndCardView: React.FC<BankingAndCardViewProps> = ({ onNaviga
 
           <div className="pt-2">
             <button
+              type="button"
               onClick={() => onNavigateTab('forms')}
               className="text-xs text-purple-700 hover:text-purple-900 font-semibold underline flex items-center gap-1 cursor-pointer"
             >
               <span>前往下載「玉山銀行國民旅遊卡專用申請書」表單 →</span>
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Card 3: Dedicated Natural Person Certificate (自然人憑證) Guidance Card */}
+      <div className="bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/50 border-2 border-indigo-200 rounded-2xl p-6 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-indigo-100">
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 uppercase tracking-wider mb-1">
+              <KeyRound className="w-4 h-4 text-indigo-600" />
+              <span>重要公務憑證 · 數位簽章與差勤必備</span>
+            </div>
+            <h3 className="text-lg font-bold text-slate-900">
+              新進同仁申請「自然人憑證」重要提醒
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              為確保到職後各項日常公務順利推展，新進人員請儘速向任一戶政事務所申請自然人憑證 IC 卡。
+            </p>
+          </div>
+          <div className="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shrink-0 self-start sm:self-auto shadow-xs">
+            公務必備 · 到職優先辦理
+          </div>
+        </div>
+
+        {/* 2 Core Usages Highlight Box */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white border-2 border-indigo-100 rounded-xl p-4.5 space-y-2.5 shadow-2xs hover:border-indigo-300 transition-colors">
+            <div className="flex items-center gap-2 text-indigo-900 font-bold text-sm">
+              <div className="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-700 shrink-0">
+                <FileCheck2 className="w-4 h-4" />
+              </div>
+              <span>1. 公文線上簽核與辦理必備</span>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              公所日常各類公文均採電子線上簽核。使用自然人憑證方能進行：
+            </p>
+            <ul className="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+              <li><strong>公文系統安全登入</strong>：驗證承辦人員公務身分。</li>
+              <li><strong>電子公文簽核與會辦</strong>：公文線上批示、審查加簽與代為決行。</li>
+              <li><strong>數位簽章認證</strong>：具備法律保障之電子簽章，符合公文處理規範。</li>
+            </ul>
+          </div>
+
+          <div className="bg-white border-2 border-purple-100 rounded-xl p-4.5 space-y-2.5 shadow-2xs hover:border-purple-300 transition-colors">
+            <div className="flex items-center gap-2 text-purple-900 font-bold text-sm">
+              <div className="w-7 h-7 rounded-lg bg-purple-100 flex items-center justify-center text-purple-700 shrink-0">
+                <KeyRound className="w-4 h-4" />
+              </div>
+              <span>2. 登入 ECPA 人事服務網專用</span>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              登入行政院人事行政總處人事服務網（ECPA）之後續公務權益：
+            </p>
+            <ul className="text-xs text-slate-700 space-y-1.5 list-disc list-inside">
+              <li><strong>WebITR 線上差勤系統</strong>：每日打卡簽到退、請假與公差派免申請。</li>
+              <li><strong>加班費與補休報支</strong>：公務加班線上申報、核銷審核及時數補休換算。</li>
+              <li><strong>個人人事資料查閱</strong>：年資累計、銓敘審定、考績通知書及福利補助查詢。</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Application Procedure Guide */}
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4.5 text-xs space-y-3">
+          <div className="font-bold text-slate-800 flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-indigo-600" />
+            <span>自然人憑證申辦方式與準備須知：</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="bg-white p-3 rounded-lg border border-slate-200">
+              <div className="font-semibold text-slate-800 mb-1">① 申辦地點</div>
+              <div className="text-slate-600 leading-relaxed">
+                全國任一戶政事務所臨櫃辦理。<br />
+                <span className="text-indigo-700 font-medium">（鄰近本所：苗栗縣三義鄉戶政事務所，步行約 2 分鐘）</span>
+              </div>
+            </div>
+
+            <div className="bg-white p-3 rounded-lg border border-slate-200">
+              <div className="font-semibold text-slate-800 mb-1">② 應備證件與規費</div>
+              <div className="text-slate-600 leading-relaxed">
+                1. 本人國民身分證正本。<br />
+                2. 工本費現金 NT$ 250 元。<br />
+                3. 個人常用之 E-mail 信箱。
+              </div>
+            </div>
+
+            <div className="bg-white p-3 rounded-lg border border-slate-200">
+              <div className="font-semibold text-slate-800 mb-1">③ 使用準備</div>
+              <div className="text-slate-600 leading-relaxed">
+                1. 備妥晶片讀卡機。<br />
+                2. 臨櫃設定之 6~8 碼 PIN 碼為個人數位印章，請妥善保管切勿外洩。
+              </div>
+            </div>
           </div>
         </div>
       </div>

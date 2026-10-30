@@ -59,7 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
     },
     {
       id: 'banking',
-      label: '農會與國旅卡',
+      label: '農會、國旅卡及自然人憑證',
       icon: <Landmark className="w-4 h-4" />,
       activeClasses: 'bg-purple-600 text-white border-purple-700 shadow-xs font-bold',
       hoverClasses: 'hover:bg-purple-50 hover:text-purple-700 text-slate-700',

@@ -207,7 +207,7 @@ export const PrintReceiptModal: React.FC<PrintReceiptModalProps> = ({
           {/* Section 2: Banking & Credit Card */}
           <div>
             <h4 className="text-sm font-bold border-b border-stone-300 pb-1 mb-2 text-stone-900">
-              二、三義鄉農會薪資開戶與玉山國旅卡
+              二、三義鄉農會薪資開戶、玉山國旅卡及自然人憑證
             </h4>
             <div className="space-y-1.5 text-xs">
               <div className="flex items-center gap-2">
@@ -219,13 +219,19 @@ export const PrintReceiptModal: React.FC<PrintReceiptModalProps> = ({
               <div className="flex items-center gap-2">
                 <Square className="w-4 h-4 text-stone-400 shrink-0" />
                 <span>
-                  將農會存摺封面影本黏貼於薪資轉帳同意書，送交五樓人事室及主計室出納建檔。
+                  將農會存摺封面影本黏貼於薪資轉帳同意書，送交五樓人事室及出納建檔。
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Square className="w-4 h-4 text-stone-400 shrink-0" />
                 <span>
-                  本所特約國民旅遊卡為<strong>玉山銀行</strong>，已向人事室確認申辦進度與檢核系統帳號。
+                  本所特約國民旅遊卡為<strong>玉山銀行</strong>，已向人事室確認發卡申辦進度。
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Square className="w-4 h-4 text-stone-400 shrink-0" />
+                <span>
+                  前往戶政事務所申辦<strong>自然人憑證</strong>，以利公文線上簽核及登入 ECPA 人事服務網（WebITR差勤）。
                 </span>
               </div>
             </div>

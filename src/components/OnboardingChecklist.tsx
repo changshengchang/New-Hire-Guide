@@ -48,7 +48,7 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
             歡迎加入三義鄉公所服務團隊
           </h1>
           <p className="text-blue-100 text-sm leading-relaxed mb-4">
-            為協助您順利完成各項到職法定義務與行政手續，本系統彙整了繳交證件、報告表單、三義農會開戶、玉山國旅卡、MyData具結及內部磁碟【Z:\1.人事室】等指引。請依下方檢核項目逐一核對辦理。
+            為協助您順利完成各項到職法定義務與行政手續，本系統彙整了繳交證件、報告表單、三義農會開戶、玉山國旅卡及自然人憑證、MyData具結及內部磁碟【Z:\1.人事室】等指引。請依下方檢核項目逐一核對辦理。
           </p>
           <div className="flex items-center gap-4 text-xs text-blue-200 flex-wrap">
             <span className="bg-blue-800/80 px-2.5 py-1 rounded-md border border-blue-600/60">
@@ -176,9 +176,9 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
             <span>第一天重要金融任務</span>
             <span className="text-purple-400 group-hover:translate-x-1 transition-transform">→</span>
           </div>
-          <h3 className="text-base font-bold text-purple-950 mb-2">三義鄉農會開戶指引</h3>
+          <h3 className="text-base font-bold text-purple-950 mb-2">農會、國旅卡及自然人憑證</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            請攜帶身分證、健保卡及派令或報到單，攜帶至少 1,000 元至鄉農會開立薪資專戶。
+            攜帶證件至鄉農會開立薪資專戶，申辦玉山國旅卡，並儘速申請自然人憑證以利公文辦理與登入 ECPA。
           </p>
         </div>
 
