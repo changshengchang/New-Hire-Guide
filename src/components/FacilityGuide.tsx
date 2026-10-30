@@ -10,6 +10,8 @@ interface FacilityGuideProps {
   onBack?: () => void;
 }
 
+const formatUnitName = (name: string) => name?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || name;
+
 export const FacilityGuide: React.FC<FacilityGuideProps> = ({
   facilities,
   viewMode,
@@ -208,7 +210,7 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
                   </div>
 
                   <div className="text-base font-bold mb-1">
-                    {facility.unitName}
+                    {formatUnitName(facility.unitName)}
                   </div>
 
                   <div
@@ -231,7 +233,7 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
             <div className="relative aspect-16/9 bg-stone-100 overflow-hidden group">
               <img
                 src={activeFacility.photoUrl}
-                alt={`${activeFacility.floorLevel} ${activeFacility.unitName}`}
+                alt={`${activeFacility.floorLevel} ${formatUnitName(activeFacility.unitName)}`}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-101"
               />
@@ -244,7 +246,7 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
                     {activeFacility.building} · {activeFacility.floorLevel}
                   </div>
                   <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
-                    {activeFacility.unitName}
+                    {formatUnitName(activeFacility.unitName)}
                   </h3>
                   <p className="text-xs text-stone-200 mt-0.5 line-clamp-1">
                     {activeFacility.title}
@@ -255,7 +257,7 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
                 <button
                   onClick={() => handleTriggerUpload(activeFacility.id)}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-white/95 hover:bg-white text-stone-900 text-xs font-semibold rounded-lg shadow-sm backdrop-blur-xs transition-all shrink-0 border border-stone-200 hover:shadow"
-                  title={`上傳更換【${activeFacility.unitName}】專屬照片`}
+                  title={`上傳更換【${formatUnitName(activeFacility.unitName)}】專屬照片`}
                 >
                   <Upload className="w-3.5 h-3.5 text-stone-700" />
                   <span>更換此課室相片</span>
@@ -272,7 +274,7 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
                     {activeFacility.floorLevel}
                   </span>
                   <span className="text-base font-bold text-stone-900">
-                    {activeFacility.unitName}
+                    {formatUnitName(activeFacility.unitName)}
                   </span>
                 </div>
                 <span className="text-xs text-stone-500 font-mono">

@@ -101,7 +101,18 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length >= 18) {
-          return parsed;
+          // Sanitize any legacy cached names (ensuring 三義鄉納骨堂 has no "(思恩堂)")
+          return parsed.map((item: FacilityLocation) => {
+            if (item.id === 'fac-annex-funeral-columbarium' || item.unitName?.includes('思恩堂')) {
+              return {
+                ...item,
+                unitName: '三義鄉納骨堂',
+                title: item.title?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.title,
+                description: item.description?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.description,
+              };
+            }
+            return item;
+          });
         }
       }
     } catch (e) {
