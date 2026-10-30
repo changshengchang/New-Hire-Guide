@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { FacilityLocation, ViewMode } from '../types';
-import { Building2, Camera, Upload, Phone, MapPin, Search, Edit3, Check, Filter, ArrowLeft } from 'lucide-react';
+import { Building2, Camera, Upload, Phone, MapPin, Search, Edit3, Check, Filter, ArrowLeft, Lock } from 'lucide-react';
+import { compressImage } from '../utils/photoStorage';
 
 interface FacilityGuideProps {
   facilities: FacilityLocation[];
@@ -29,6 +30,7 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadingTargetId, setUploadingTargetId] = useState<string | null>(null);
+  const [isCompressing, setIsCompressing] = useState<boolean>(false);
 
   const floorTabs = [
     { id: 'all', label: '全部空間' },
@@ -66,15 +68,25 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && uploadingTargetId) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        onUpdatePhoto(uploadingTargetId, reader.result as string);
+      const targetId = uploadingTargetId;
+      try {
+        setIsCompressing(true);
+        const compressedBase64 = await compressImage(file);
+        onUpdatePhoto(targetId, compressedBase64);
+      } catch (err) {
+        console.warn('Canvas image compression failed, using reader fallback', err);
+        const reader = new FileReader();
+        reader.onload = () => {
+          onUpdatePhoto(targetId, reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } finally {
+        setIsCompressing(false);
         setUploadingTargetId(null);
-      };
-      reader.readAsDataURL(file);
+      }
     }
     e.target.value = '';
   };
@@ -132,10 +144,15 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
             </p>
           </div>
 
-          {viewMode === 'admin' && (
-            <div className="bg-amber-100 border border-amber-300 rounded-lg px-3.5 py-2 text-xs text-amber-950 flex items-center gap-2 shrink-0 self-start sm:self-auto font-medium">
+          {viewMode === 'admin' ? (
+            <div className="bg-amber-100 border border-amber-300 rounded-lg px-3.5 py-2 text-xs text-amber-950 flex items-center gap-2 shrink-0 self-start sm:self-auto font-medium shadow-xs">
               <Camera className="w-4 h-4 text-amber-800" />
-              <span>人事後台已啟動：可單獨為各課室更換專屬實景相片</span>
+              <span>人事後台模式：具備各課室相片更換與課室說明維護權限</span>
+            </div>
+          ) : (
+            <div className="bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-600 flex items-center gap-1.5 shrink-0 self-start sm:self-auto">
+              <Lock className="w-3.5 h-3.5 text-slate-400" />
+              <span>新進人員瀏覽模式（照片維護權限請於人事後台操作）</span>
             </div>
           )}
         </div>
@@ -253,15 +270,18 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
                   </p>
                 </div>
 
-                {/* Upload Photo Button for this SPECIFIC unit */}
-                <button
-                  onClick={() => handleTriggerUpload(activeFacility.id)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white/95 hover:bg-white text-stone-900 text-xs font-semibold rounded-lg shadow-sm backdrop-blur-xs transition-all shrink-0 border border-stone-200 hover:shadow"
-                  title={`上傳更換【${formatUnitName(activeFacility.unitName)}】專屬照片`}
-                >
-                  <Upload className="w-3.5 h-3.5 text-stone-700" />
-                  <span>更換此課室相片</span>
-                </button>
+                {/* Upload Photo Button for this SPECIFIC unit - ONLY IN ADMIN MODE */}
+                {viewMode === 'admin' && (
+                  <button
+                    onClick={() => handleTriggerUpload(activeFacility.id)}
+                    disabled={isCompressing}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-stone-950 text-xs font-bold rounded-lg shadow-sm backdrop-blur-xs transition-all shrink-0 border border-amber-600 hover:shadow ring-2 ring-amber-300/80 cursor-pointer"
+                    title={`【人事後台權限】上傳更換【${formatUnitName(activeFacility.unitName)}】專屬照片`}
+                  >
+                    <Upload className="w-3.5 h-3.5 text-stone-950 stroke-[2.5]" />
+                    <span>{isCompressing ? '處理保存中...' : '更換此課室相片 (人事後台)'}</span>
+                  </button>
+                )}
               </div>
             </div>
 

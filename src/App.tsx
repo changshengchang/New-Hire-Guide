@@ -34,6 +34,12 @@ import { BankingAndCardView } from './components/BankingAndCardView';
 import { MyDataGuide } from './components/MyDataGuide';
 import { InternalNetworkGuide } from './components/InternalNetworkGuide';
 import { PrintReceiptModal } from './components/PrintReceiptModal';
+import {
+  saveFacilityPhoto,
+  removeFacilityPhoto,
+  getSavedPhotosFromLocalStorage,
+  loadAllFacilityPhotosFromIndexedDB,
+} from './utils/photoStorage';
 
 export default function App() {
   // Navigation & Mode States
@@ -96,30 +102,50 @@ export default function App() {
 
   // Global Facilities State (Township-wide, 19 distinct locations with photos)
   const [facilities, setFacilities] = useState<FacilityLocation[]>(() => {
+    // 1. Get saved custom photos map
+    const customPhotos = getSavedPhotosFromLocalStorage();
+
+    let baseFacilities: FacilityLocation[] = INITIAL_FACILITIES;
     try {
       const saved = localStorage.getItem('sanyi_facilities');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length >= 18) {
-          // Sanitize any legacy cached names (ensuring 三義鄉納骨堂 has no "(思恩堂)")
-          return parsed.map((item: FacilityLocation) => {
-            if (item.id === 'fac-annex-funeral-columbarium' || item.unitName?.includes('思恩堂')) {
-              return {
-                ...item,
-                unitName: '三義鄉納骨堂',
-                title: item.title?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.title,
-                description: item.description?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.description,
-              };
-            }
-            return item;
-          });
+          baseFacilities = parsed;
         }
       }
     } catch (e) {
       console.error(e);
     }
-    return INITIAL_FACILITIES;
+
+    return baseFacilities.map((item: FacilityLocation) => {
+      const isColumbarium = item.id === 'fac-annex-funeral-columbarium' || item.unitName?.includes('思恩堂');
+      const customPhoto = customPhotos[item.id];
+      return {
+        ...item,
+        unitName: isColumbarium ? '三義鄉納骨堂' : item.unitName,
+        title: isColumbarium ? item.title?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.title : item.title,
+        description: isColumbarium ? item.description?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.description : item.description,
+        photoUrl: customPhoto || item.photoUrl,
+      };
+    });
   });
+
+  // Hydrate custom photos from IndexedDB if available (e.g. across sessions or if localStorage quota limit was reached)
+  useEffect(() => {
+    loadAllFacilityPhotosFromIndexedDB().then((idbPhotos) => {
+      if (idbPhotos && Object.keys(idbPhotos).length > 0) {
+        setFacilities((prev) =>
+          prev.map((item) => {
+            if (idbPhotos[item.id] && idbPhotos[item.id] !== item.photoUrl) {
+              return { ...item, photoUrl: idbPhotos[item.id] };
+            }
+            return item;
+          })
+        );
+      }
+    });
+  }, []);
 
   // Print Modal
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
@@ -142,7 +168,11 @@ export default function App() {
   }, [forms]);
 
   useEffect(() => {
-    localStorage.setItem('sanyi_facilities', JSON.stringify(facilities));
+    try {
+      localStorage.setItem('sanyi_facilities', JSON.stringify(facilities));
+    } catch (e) {
+      console.warn('LocalStorage facilities quota warning', e);
+    }
   }, [facilities]);
 
   // Auto-sync Checklist Item 1 when all required documents are 'prepared' or 'not_needed'
@@ -372,7 +402,11 @@ export default function App() {
   };
 
   // Facility Handlers
-  const handleUpdateFacilityPhoto = (facilityId: string, newPhotoUrl: string) => {
+  const handleUpdateFacilityPhoto = async (facilityId: string, newPhotoUrl: string) => {
+    // 1. Persist photo in LocalStorage & IndexedDB
+    await saveFacilityPhoto(facilityId, newPhotoUrl);
+
+    // 2. Update facilities React state
     setFacilities((prev) =>
       prev.map((fac) =>
         fac.id === facilityId
@@ -384,6 +418,24 @@ export default function App() {
           : fac
       )
     );
+  };
+
+  const handleResetFacilityPhoto = async (facilityId: string) => {
+    await removeFacilityPhoto(facilityId);
+    const initialMatch = INITIAL_FACILITIES.find((f) => f.id === facilityId);
+    if (initialMatch) {
+      setFacilities((prev) =>
+        prev.map((fac) =>
+          fac.id === facilityId
+            ? {
+                ...fac,
+                photoUrl: initialMatch.photoUrl,
+                updatedAt: initialMatch.updatedAt,
+              }
+            : fac
+        )
+      );
+    }
   };
 
   const handleUpdateFacilityDesc = (facilityId: string, newDesc: string) => {
@@ -420,11 +472,11 @@ export default function App() {
       {viewMode === 'admin' && (
         <div className="bg-amber-500 text-stone-950 px-4 py-2 text-xs font-semibold text-center border-b border-amber-600 shadow-xs flex items-center justify-center gap-2 print:hidden">
           <span>
-            目前處於【人事人員管理後台模式】：可新增/修改/刪除新進人員帳號（含編輯報到日期）、上傳公所表單與更換課室相片。
+            目前處於【人事人員管理後台模式】：可新增/修改/刪除新進人員帳號（含編輯報到日期）、維護各樓層課室實景照片與上傳表單。
           </span>
           <button
             onClick={() => setViewMode('newcomer')}
-            className="ml-2 underline font-bold hover:text-white"
+            className="ml-2 underline font-bold hover:text-white cursor-pointer"
           >
             點此退出後台
           </button>
@@ -433,7 +485,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Admin Mode: Centralized Employee Account & Onboarding Date Management */}
+        {/* Admin Mode: Centralized Employee Account & Facility Photos Management */}
         {viewMode === 'admin' && (
           <AdminEmployeeManager
             employees={employees}
@@ -442,6 +494,10 @@ export default function App() {
             onCreateEmployee={handleCreateEmployee}
             onUpdateEmployee={handleUpdateEmployee}
             onDeleteEmployee={handleDeleteEmployee}
+            facilities={facilities}
+            onUpdateFacilityPhoto={handleUpdateFacilityPhoto}
+            onResetFacilityPhoto={handleResetFacilityPhoto}
+            onNavigateTab={setActiveTab}
           />
         )}
 
