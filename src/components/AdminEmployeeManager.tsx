@@ -215,7 +215,7 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
           }`}
         >
           <Camera className="w-4 h-4" />
-          <span>各樓層課室照片維護管理 ({facilities?.length || 19} 處空間)</span>
+          <span>各樓層課室照片維護管理 ({facilities?.length || 20} 處空間)</span>
         </button>
       </div>
 
@@ -374,7 +374,7 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
             各樓層課室實景照片管理中心
           </h3>
           <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-            由人事室專責維護或更換全所 19 處課室與附屬館舍照片。更換後採高解析輕量自動保存，新進同仁登入時均維持您所更換之照片。
+            由人事室專責維護或更換全所 {facilities?.length || 20} 處課室與附屬館舍照片。更換後採高解析輕量自動保存，新進同仁登入時均維持您所更換之照片。
           </p>
         </div>
 

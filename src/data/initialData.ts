@@ -452,12 +452,29 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
     updatedAt: '2026-10-10',
   },
 
-  // 附屬館舍
+  // 第二辦公大樓與附屬館舍
+  {
+    id: 'fac-annex-b2-1f-shehui',
+    building: '第二辦公大樓',
+    floorLevel: '第二辦公大樓一F',
+    unitName: '第二辦公大樓一F(社會福利課)',
+    title: '全鄉社會救助、弱勢族群關懷、中長者與兒少身障福利服務中心',
+    description: '位於第二辦公大樓一樓，專責辦理低收入戶、身心障礙生活補助、急難救助、健保福保申請及社區發展協會輔導等社會福利綜合服務窗口。',
+    responsibilities: [
+      '低收入戶、中低收入戶生活扶助審查與資格證明核發。',
+      '身心障礙者生活補助、輔具補助與愛心敬老悠遊卡申辦。',
+      '急難救助急難紓困受理、特殊境遇家庭扶助與兒少福利諮詢。',
+      '社區發展協會業務輔導、社區活動中心租借與志工管理。',
+    ],
+    contactExt: '專線 (037) 872-801 / 社會福利課',
+    photoUrl: imgCivicOffice,
+    updatedAt: '2026-11-05',
+  },
   {
     id: 'fac-annex-clean',
     building: '第二辦公大樓',
-    floorLevel: '第二辦公大樓',
-    unitName: '第二辦公大樓 (清潔隊)',
+    floorLevel: '第二辦公大樓二F',
+    unitName: '第二辦公大樓二F(清潔隊)',
     title: '環保環境清潔作業總部與防災救災物資倉庫',
     description: '因應環境衛生與資源回收調度需要設置之獨立辦公區，設有大型垃圾車輛停放場與防災備料倉庫。',
     responsibilities: [
@@ -467,7 +484,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
     ],
     contactExt: '專線 (037) 872-801 / 清潔隊部',
     photoUrl: imgTownHall,
-    updatedAt: '2026-10-08',
+    updatedAt: '2026-11-05',
   },
   {
     id: 'fac-annex-library',

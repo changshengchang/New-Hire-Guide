@@ -101,34 +101,55 @@ export default function App() {
     return INITIAL_FORMS;
   });
 
-  // Global Facilities State (Township-wide, 19 distinct locations with photos)
+  // Global Facilities State (Township-wide, 20 distinct locations with photos)
   const [facilities, setFacilities] = useState<FacilityLocation[]>(() => {
     // 1. Get saved custom photos map
     const customPhotos = getSavedPhotosFromLocalStorage();
 
-    let baseFacilities: FacilityLocation[] = INITIAL_FACILITIES;
+    let cachedList: FacilityLocation[] = [];
     try {
       const saved = localStorage.getItem('sanyi_facilities');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length >= 18) {
-          baseFacilities = parsed;
+          cachedList = parsed;
         }
       }
     } catch (e) {
       console.error(e);
     }
 
-    return baseFacilities.map((item: FacilityLocation) => {
-      const isColumbarium = item.id === 'fac-annex-funeral-columbarium' || item.unitName?.includes('思恩堂');
-      const customPhoto = customPhotos[item.id];
-      const safePhoto = resolveFacilityPhoto(customPhoto || item.photoUrl);
+    const existingById = new Map<string, FacilityLocation>();
+    cachedList.forEach((f) => existingById.set(f.id, f));
+
+    // Always use INITIAL_FACILITIES as the base to guarantee new items (e.g. 第二辦公大樓一F 社會福利課)
+    // and updated naming (第二辦公大樓二F 清潔隊) take effect immediately, while preserving custom photos/descriptions
+    return INITIAL_FACILITIES.map((initItem) => {
+      const existing = existingById.get(initItem.id);
+      let photoUrl = initItem.photoUrl;
+      let description = initItem.description;
+      let updatedAt = initItem.updatedAt;
+
+      if (existing) {
+        if (existing.photoUrl) photoUrl = existing.photoUrl;
+        if (existing.description) description = existing.description;
+        if (existing.updatedAt) updatedAt = existing.updatedAt;
+      }
+
+      // Dedicated custom photos override
+      const customPhoto = customPhotos[initItem.id];
+      if (customPhoto) photoUrl = customPhoto;
+
+      const safePhoto = resolveFacilityPhoto(photoUrl);
+      const isColumbarium = initItem.id === 'fac-annex-funeral-columbarium' || initItem.unitName?.includes('思恩堂');
+
       return {
-        ...item,
-        unitName: isColumbarium ? '三義鄉納骨堂' : item.unitName,
-        title: isColumbarium ? item.title?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.title : item.title,
-        description: isColumbarium ? item.description?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.description : item.description,
+        ...initItem,
+        unitName: isColumbarium ? '三義鄉納骨堂' : initItem.unitName,
+        title: isColumbarium ? initItem.title?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || initItem.title : initItem.title,
+        description: isColumbarium ? description?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || description : description,
         photoUrl: safePhoto,
+        updatedAt,
       };
     });
   });
