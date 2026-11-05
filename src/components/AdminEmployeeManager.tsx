@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { EmployeeProfile, PersonnelType, SERVICE_UNITS, FacilityLocation, ActiveTab } from '../types';
-import { Users, Plus, Edit, Trash2, Calendar, Check, X, ShieldAlert, Award, ArrowLeftRight, Eye, Camera, Upload, RotateCcw, ExternalLink } from 'lucide-react';
+import { Users, Plus, Edit, Trash2, Calendar, Check, X, ShieldAlert, Award, ArrowLeftRight, Eye, Camera, Upload, RotateCcw, ExternalLink, FileText, CheckCircle2 } from 'lucide-react';
 import { INITIAL_FACILITIES, resolveFacilityPhoto } from '../data/initialData';
 import { compressImage } from '../utils/photoStorage';
 
@@ -14,6 +14,8 @@ interface AdminEmployeeManagerProps {
   facilities?: FacilityLocation[];
   onUpdateFacilityPhoto?: (facilityId: string, newPhotoUrl: string) => void;
   onResetFacilityPhoto?: (facilityId: string) => void;
+  onUpdateFacilityInfo?: (facilityId: string, updatedInfo: Partial<FacilityLocation>) => void;
+  onLockAllPhotosAsDefault?: () => void;
   onNavigateTab?: (tab: ActiveTab) => void;
 }
 
@@ -27,9 +29,11 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
   facilities = INITIAL_FACILITIES,
   onUpdateFacilityPhoto,
   onResetFacilityPhoto,
+  onUpdateFacilityInfo,
+  onLockAllPhotosAsDefault,
   onNavigateTab,
 }) => {
-  const [adminSubTab, setAdminSubTab] = useState<'employees' | 'facilities'>('employees');
+  const [adminSubTab, setAdminSubTab] = useState<'employees' | 'facilities'>('facilities');
   const [facilityFloorFilter, setFacilityFloorFilter] = useState<string>('all');
   const [uploadingFacilityId, setUploadingFacilityId] = useState<string | null>(null);
   const [isCompressing, setIsCompressing] = useState<boolean>(false);
@@ -37,6 +41,15 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingEmp, setEditingEmp] = useState<EmployeeProfile | null>(null);
+
+  // Facility Text Edit State
+  const [editingFacility, setEditingFacility] = useState<FacilityLocation | null>(null);
+  const [facUnitName, setFacUnitName] = useState('');
+  const [facTitle, setFacTitle] = useState('');
+  const [facContactExt, setFacContactExt] = useState('');
+  const [facDescription, setFacDescription] = useState('');
+  const [facResponsibilities, setFacResponsibilities] = useState('');
+  const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
 
   // Add Employee Form State
   const [newId, setNewId] = useState('');
@@ -182,8 +195,41 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
     e.target.value = '';
   };
 
+  const handleOpenFacilityEdit = (fac: FacilityLocation) => {
+    setEditingFacility(fac);
+    setFacUnitName(fac.unitName);
+    setFacTitle(fac.title);
+    setFacContactExt(fac.contactExt);
+    setFacDescription(fac.description);
+    setFacResponsibilities((fac.responsibilities || []).join('\n'));
+  };
+
+  const handleSaveFacilityEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingFacility) return;
+
+    const parsedResponsibilities = facResponsibilities
+      .split('\n')
+      .map((r) => r.trim())
+      .filter((r) => r.length > 0);
+
+    onUpdateFacilityInfo?.(editingFacility.id, {
+      unitName: facUnitName.trim() || editingFacility.unitName,
+      title: facTitle.trim() || editingFacility.title,
+      contactExt: facContactExt.trim() || editingFacility.contactExt,
+      description: facDescription.trim() || editingFacility.description,
+      responsibilities:
+        parsedResponsibilities.length > 0 ? parsedResponsibilities : editingFacility.responsibilities,
+    });
+
+    const savedName = facUnitName.trim() || editingFacility.unitName;
+    setEditingFacility(null);
+    setFeedbackMsg(`已成功儲存【${savedName}】之介紹文字與職掌！`);
+    setTimeout(() => setFeedbackMsg(null), 3500);
+  };
+
   const handleResetPhoto = (facId: string, unitName: string) => {
-    if (window.confirm(`確定要將【${unitName}】的照片恢復為系統初始預設照片嗎？`)) {
+    if (window.confirm(`確定要將【${unitName}】的照片恢復為系統初始出廠照片嗎？`)) {
       onResetFacilityPhoto?.(facId);
     }
   };
@@ -368,27 +414,62 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
         <div>
           <div className="flex items-center gap-2 text-amber-800 text-xs font-bold mb-1">
             <Camera className="w-4 h-4 text-amber-700" />
-            <span>人事後台專屬 · 各樓層獨立課室實景照片維護</span>
+            <span>人事後台專屬 · 各樓層獨立課室實景照片與介紹維護</span>
           </div>
           <h3 className="text-xl font-bold text-slate-900">
-            各樓層課室實景照片管理中心
+            各樓層課室實景照片與介紹管理中心
           </h3>
           <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-            由人事室專責維護或更換全所 {facilities?.length || 20} 處課室與附屬館舍照片。更換後採高解析輕量自動保存，新進同仁登入時均維持您所更換之照片。
+            由人事室專責維護或更換全所 {facilities?.length || 20} 處課室與附屬館舍照片及介紹文字。目前已更換之最新照片均直接設為正式預設照片，新進同仁登入時均維持您所更換之照片與最新介紹。
           </p>
         </div>
 
-        {onNavigateTab && (
+        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 flex-wrap">
+          {onLockAllPhotosAsDefault && (
+            <button
+              type="button"
+              onClick={() => {
+                onLockAllPhotosAsDefault();
+                setFeedbackMsg('✓ 已將全所 20 處空間之現有最新相片設定為「正式預設照片」！');
+                setTimeout(() => setFeedbackMsg(null), 3500);
+              }}
+              className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-lg border border-emerald-700 shadow-xs cursor-pointer transition-colors"
+              title="將目前所有已上傳之最新照片全數鎖定並設定為正式預設照片"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>將當前所有照片設為預設照片</span>
+            </button>
+          )}
+
+          {onNavigateTab && (
+            <button
+              type="button"
+              onClick={() => onNavigateTab('facilities')}
+              className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold rounded-lg border border-slate-300 shadow-xs cursor-pointer transition-colors"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-slate-600" />
+              <span>前往環境導覽全覽頁</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Success / Feedback Toast Banner */}
+      {feedbackMsg && (
+        <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{feedbackMsg}</span>
+          </div>
           <button
             type="button"
-            onClick={() => onNavigateTab('facilities')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold rounded-lg border border-slate-300 shadow-xs cursor-pointer self-start sm:self-auto shrink-0 transition-colors"
+            onClick={() => setFeedbackMsg(null)}
+            className="text-emerald-600 hover:text-emerald-800 p-0.5"
           >
-            <ExternalLink className="w-3.5 h-3.5 text-slate-600" />
-            <span>前往環境導覽全覽頁</span>
+            <X className="w-3.5 h-3.5" />
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Floor Filter Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
@@ -411,8 +492,6 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
       {/* Facility Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredAdminFacilities.map((fac) => {
-          const initialMatch = INITIAL_FACILITIES.find((init) => init.id === fac.id);
-          const isCustom = fac.photoUrl !== initialMatch?.photoUrl;
           const displayUnitName = fac.unitName.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim();
 
           return (
@@ -436,60 +515,56 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
                     {fac.floorLevel}
                   </div>
 
-                  {isCustom ? (
-                    <div className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded flex items-center gap-1 shadow-xs">
-                      <Check className="w-3 h-3 stroke-[2.5]" />
-                      <span>人事已更換</span>
-                    </div>
-                  ) : (
-                    <div className="absolute top-2 right-2 px-2 py-0.5 bg-stone-700/80 text-stone-200 text-[10px] rounded">
-                      預設照片
-                    </div>
-                  )}
+                  {/* All current active photos are official default photos */}
+                  <div className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-600/90 text-white text-[10px] font-bold rounded flex items-center gap-1 shadow-xs backdrop-blur-xs">
+                    <Check className="w-3 h-3 stroke-[2.5]" />
+                    <span>正式預設照片</span>
+                  </div>
                 </div>
 
                 {/* Metadata */}
                 <div className="p-3.5 pb-2">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-1">
                     <h4 className="text-sm font-bold text-slate-900">
                       {displayUnitName}
                     </h4>
-                    <span className="text-[11px] text-stone-500 font-mono">
+                    <span className="text-[11px] text-stone-500 font-mono font-medium">
                       {fac.contactExt}
                     </span>
                   </div>
-                  <p className="text-xs text-stone-600 mt-1 line-clamp-1">
+                  <p className="text-xs text-amber-900 font-medium line-clamp-1 mb-1">
                     {fac.title}
+                  </p>
+                  <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed">
+                    {fac.description}
                   </p>
                 </div>
               </div>
 
-              {/* Actions Bar */}
+              {/* Actions Bar: Edit Information + Change Photo */}
               <div className="p-3.5 pt-0 flex items-center justify-between gap-2 border-t border-stone-100 mt-2">
+                <button
+                  type="button"
+                  onClick={() => handleOpenFacilityEdit(fac)}
+                  className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-800 text-xs font-bold rounded-lg border border-stone-300 shadow-2xs cursor-pointer transition-colors"
+                  title={`編輯【${displayUnitName}】之介紹文字、定位說明與業務職掌`}
+                >
+                  <FileText className="w-3.5 h-3.5 text-stone-700" />
+                  <span>編輯課室介紹</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => handleTriggerUpload(fac.id)}
                   disabled={isCompressing}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-stone-950 text-xs font-bold rounded-lg border border-amber-600 shadow-xs cursor-pointer transition-colors"
-                  title={`上傳或更換【${displayUnitName}】之照片`}
+                  className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-stone-950 text-xs font-bold rounded-lg border border-amber-600 shadow-2xs cursor-pointer transition-colors"
+                  title={`上傳更換【${displayUnitName}】之實景相片`}
                 >
                   <Upload className="w-3.5 h-3.5 text-stone-950 stroke-[2.5]" />
                   <span>
-                    {isCompressing && uploadingFacilityId === fac.id ? '壓縮儲存中...' : '更換相片'}
+                    {isCompressing && uploadingFacilityId === fac.id ? '儲存中...' : '更換相片'}
                   </span>
                 </button>
-
-                {isCustom && onResetFacilityPhoto && (
-                  <button
-                    type="button"
-                    onClick={() => handleResetPhoto(fac.id, displayUnitName)}
-                    className="flex items-center justify-center gap-1 py-1.5 px-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs rounded-lg border border-stone-300 cursor-pointer transition-colors"
-                    title="恢復回系統預設照片"
-                  >
-                    <RotateCcw className="w-3 h-3 text-stone-600" />
-                    <span className="text-[11px]">還原預設</span>
-                  </button>
-                )}
               </div>
             </div>
           );
@@ -741,6 +816,129 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
                 >
                   <Check className="w-3.5 h-3.5" />
                   <span>儲存修改</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Edit Facility Information */}
+      {editingFacility && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center font-bold">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-stone-900">
+                    人事室 · 編輯各樓層課室介紹文字
+                  </h3>
+                  <span className="text-[11px] text-stone-500 font-mono">
+                    {editingFacility.building} · {editingFacility.floorLevel}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingFacility(null)}
+                className="text-stone-400 hover:text-stone-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveFacilityEdit} className="mt-4 space-y-3.5 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-stone-700 font-semibold mb-1">
+                    課室 / 空間名稱 <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={facUnitName}
+                    onChange={(e) => setFacUnitName(e.target.value)}
+                    placeholder="例如：民政課"
+                    className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-stone-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-stone-700 font-semibold mb-1">
+                    公所聯絡分機 / 電話 <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={facContactExt}
+                    onChange={(e) => setFacContactExt(e.target.value)}
+                    placeholder="例如：分機 110 ~ 116"
+                    className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-stone-600 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-stone-700 font-semibold mb-1">
+                  核心業務定位標題（簡述重點） <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={facTitle}
+                  onChange={(e) => setFacTitle(e.target.value)}
+                  placeholder="例如：自治行政、里鄰關懷與基層便民窗口"
+                  className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-stone-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-stone-700 font-semibold mb-1">
+                  詳細環境與定位介紹文字 <span className="text-rose-500">*</span>
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  value={facDescription}
+                  onChange={(e) => setFacDescription(e.target.value)}
+                  placeholder="詳細介紹該課室之辦公環境、地理位置與核心服務特色..."
+                  className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-stone-600 leading-relaxed"
+                />
+              </div>
+
+              <div>
+                <label className="block text-stone-700 font-semibold mb-1">
+                  主要業務職掌範疇（每行一項業務職掌）
+                </label>
+                <textarea
+                  rows={4}
+                  value={facResponsibilities}
+                  onChange={(e) => setFacResponsibilities(e.target.value)}
+                  placeholder="辦理自治行政與選務作業&#10;掌理里鄰長業務與里民活動&#10;兵役行政與替代役管理"
+                  className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-stone-600 leading-relaxed font-mono"
+                />
+                <span className="text-[11px] text-stone-500 mt-1 block">
+                  提示：每換一行將自動呈現為前台環境導覽的一點項目。
+                </span>
+              </div>
+
+              <div className="pt-3 border-t border-stone-100 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditingFacility(null)}
+                  className="px-3.5 py-2 text-stone-600 hover:bg-stone-100 rounded-lg cursor-pointer"
+                >
+                  取消
+                </button>
+                <button
+                  type="submit"
+                  className="flex items-center gap-1.5 px-4 py-2 font-semibold bg-stone-900 hover:bg-stone-800 text-white rounded-lg shadow-xs cursor-pointer"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  <span>儲存課室文字設定</span>
                 </button>
               </div>
             </form>

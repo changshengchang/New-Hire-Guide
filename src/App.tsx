@@ -105,6 +105,13 @@ export default function App() {
   const [facilities, setFacilities] = useState<FacilityLocation[]>(() => {
     // 1. Get saved custom photos map
     const customPhotos = getSavedPhotosFromLocalStorage();
+    let baselinePhotos: Record<string, string> = {};
+    try {
+      const baseRaw = localStorage.getItem('sanyi_baseline_photos');
+      if (baseRaw) baselinePhotos = JSON.parse(baseRaw);
+    } catch (e) {
+      console.error(e);
+    }
 
     let cachedList: FacilityLocation[] = [];
     try {
@@ -123,31 +130,52 @@ export default function App() {
     cachedList.forEach((f) => existingById.set(f.id, f));
 
     // Always use INITIAL_FACILITIES as the base to guarantee new items (e.g. 第二辦公大樓一F 社會福利課)
-    // and updated naming (第二辦公大樓二F 清潔隊) take effect immediately, while preserving custom photos/descriptions
+    // and updated naming take effect immediately, while preserving custom photos, descriptions, and user-edited texts
     return INITIAL_FACILITIES.map((initItem) => {
       const existing = existingById.get(initItem.id);
       let photoUrl = initItem.photoUrl;
+      let unitName = initItem.unitName;
+      let title = initItem.title;
       let description = initItem.description;
+      let contactExt = initItem.contactExt;
+      let responsibilities = initItem.responsibilities;
       let updatedAt = initItem.updatedAt;
 
       if (existing) {
         if (existing.photoUrl) photoUrl = existing.photoUrl;
+        if (existing.unitName) unitName = existing.unitName;
+        if (existing.title) title = existing.title;
         if (existing.description) description = existing.description;
+        if (existing.contactExt) contactExt = existing.contactExt;
+        if (
+          existing.responsibilities &&
+          Array.isArray(existing.responsibilities) &&
+          existing.responsibilities.length > 0
+        ) {
+          responsibilities = existing.responsibilities;
+        }
         if (existing.updatedAt) updatedAt = existing.updatedAt;
       }
 
-      // Dedicated custom photos override
-      const customPhoto = customPhotos[initItem.id];
-      if (customPhoto) photoUrl = customPhoto;
+      // Dedicated custom or baseline photos override (ensuring latest photos become default)
+      if (baselinePhotos[initItem.id]) photoUrl = baselinePhotos[initItem.id];
+      if (customPhotos[initItem.id]) photoUrl = customPhotos[initItem.id];
 
       const safePhoto = resolveFacilityPhoto(photoUrl);
-      const isColumbarium = initItem.id === 'fac-annex-funeral-columbarium' || initItem.unitName?.includes('思恩堂');
+      const isColumbarium =
+        initItem.id === 'fac-annex-funeral-columbarium' || initItem.unitName?.includes('思恩堂');
 
       return {
         ...initItem,
-        unitName: isColumbarium ? '三義鄉納骨堂' : initItem.unitName,
-        title: isColumbarium ? initItem.title?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || initItem.title : initItem.title,
-        description: isColumbarium ? description?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || description : description,
+        unitName: isColumbarium ? '三義鄉納骨堂' : unitName,
+        title: isColumbarium
+          ? title?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || title
+          : title,
+        description: isColumbarium
+          ? description?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || description
+          : description,
+        contactExt,
+        responsibilities,
         photoUrl: safePhoto,
         updatedAt,
       };
@@ -429,6 +457,16 @@ export default function App() {
     // 1. Persist photo in LocalStorage & IndexedDB
     await saveFacilityPhoto(facilityId, newPhotoUrl);
 
+    // Also update baseline photos so newly uploaded photos immediately become official default photos
+    try {
+      const raw = localStorage.getItem('sanyi_baseline_photos');
+      const baseline = raw ? JSON.parse(raw) : {};
+      baseline[facilityId] = newPhotoUrl;
+      localStorage.setItem('sanyi_baseline_photos', JSON.stringify(baseline));
+    } catch (e) {
+      console.warn(e);
+    }
+
     // 2. Update facilities React state
     setFacilities((prev) =>
       prev.map((fac) =>
@@ -458,6 +496,37 @@ export default function App() {
             : fac
         )
       );
+    }
+  };
+
+  const handleUpdateFacilityInfo = (
+    facilityId: string,
+    updatedInfo: Partial<FacilityLocation>
+  ) => {
+    setFacilities((prev) =>
+      prev.map((fac) =>
+        fac.id === facilityId
+          ? {
+              ...fac,
+              ...updatedInfo,
+              updatedAt: new Date().toISOString().split('T')[0],
+            }
+          : fac
+      )
+    );
+  };
+
+  const handleLockAllPhotosAsDefault = () => {
+    const photoMap: Record<string, string> = {};
+    facilities.forEach((f) => {
+      if (f.photoUrl) photoMap[f.id] = f.photoUrl;
+    });
+    try {
+      localStorage.setItem('sanyi_baseline_photos', JSON.stringify(photoMap));
+      localStorage.setItem('sanyi_facility_photos_v1', JSON.stringify(photoMap));
+      localStorage.setItem('sanyi_facilities', JSON.stringify(facilities));
+    } catch (e) {
+      console.warn('LocalStorage save error', e);
     }
   };
 
@@ -520,6 +589,8 @@ export default function App() {
             facilities={facilities}
             onUpdateFacilityPhoto={handleUpdateFacilityPhoto}
             onResetFacilityPhoto={handleResetFacilityPhoto}
+            onUpdateFacilityInfo={handleUpdateFacilityInfo}
+            onLockAllPhotosAsDefault={handleLockAllPhotosAsDefault}
             onNavigateTab={setActiveTab}
           />
         )}
