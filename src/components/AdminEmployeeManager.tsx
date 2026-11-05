@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { EmployeeProfile, PersonnelType, SERVICE_UNITS, FacilityLocation, ActiveTab } from '../types';
 import { Users, Plus, Edit, Trash2, Calendar, Check, X, ShieldAlert, Award, ArrowLeftRight, Eye, Camera, Upload, RotateCcw, ExternalLink } from 'lucide-react';
-import { INITIAL_FACILITIES } from '../data/initialData';
+import { INITIAL_FACILITIES, resolveFacilityPhoto } from '../data/initialData';
 import { compressImage } from '../utils/photoStorage';
 
 interface AdminEmployeeManagerProps {
@@ -424,8 +424,12 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
                 {/* Photo Box */}
                 <div className="relative aspect-16/9 bg-stone-100 overflow-hidden group">
                   <img
-                    src={fac.photoUrl}
+                    src={resolveFacilityPhoto(fac.photoUrl)}
                     alt={`${fac.floorLevel} ${displayUnitName}`}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.src = '/images/sanyi_town_hall_1793173443309.jpg';
+                    }}
                     className="w-full h-full object-cover transition-transform group-hover:scale-101"
                   />
                   <div className="absolute top-2 left-2 px-2 py-0.5 bg-black/75 text-white text-[11px] font-mono rounded font-semibold shadow-xs">

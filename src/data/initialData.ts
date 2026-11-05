@@ -1,4 +1,23 @@
 import { ChecklistItem, DocumentItem, ReportForm, FacilityLocation, MyDataFormItem, EmployeeProfile } from '../types';
+import imgCivicOffice from '../assets/images/sanyi_civic_office_1793173446338.jpg';
+import imgTownHall from '../assets/images/sanyi_town_hall_1793173443309.jpg';
+import imgLibrary from '../assets/images/sanyi_public_library_1793173444274.jpg';
+import imgMountain from '../assets/images/sanyi_mountain_scenery_1793173445371.jpg';
+
+export { imgCivicOffice, imgTownHall, imgLibrary, imgMountain };
+
+export function resolveFacilityPhoto(url?: string): string {
+  if (!url) return imgTownHall;
+  if (url.startsWith('data:image/')) return url;
+  if (url.includes('sanyi_civic_office')) return imgCivicOffice;
+  if (url.includes('sanyi_town_hall')) return imgTownHall;
+  if (url.includes('sanyi_public_library')) return imgLibrary;
+  if (url.includes('sanyi_mountain_scenery')) return imgMountain;
+  if (url.startsWith('/src/')) {
+    return url.replace(/^\/src\//, '/');
+  }
+  return url;
+}
 
 export const INITIAL_CHECKLIST: ChecklistItem[] = [
   {
@@ -194,7 +213,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '寺廟登記、宗教財團法人管理及慶典民俗協辦。',
     ],
     contactExt: '分機 110 ~ 116',
-    photoUrl: '/src/assets/images/sanyi_civic_office_1793173446338.jpg',
+    photoUrl: imgCivicOffice,
     updatedAt: '2026-10-20',
   },
   {
@@ -210,7 +229,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '總收發文號編配與公文時效管制作業。',
     ],
     contactExt: '分機 101',
-    photoUrl: '/src/assets/images/sanyi_civic_office_1793173446338.jpg',
+    photoUrl: imgCivicOffice,
     updatedAt: '2026-10-20',
   },
 
@@ -228,7 +247,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '反貪倡廉檢舉諮詢受理與端正政風考核。',
     ],
     contactExt: '分機 230',
-    photoUrl: '/src/assets/images/sanyi_town_hall_1793173443309.jpg',
+    photoUrl: imgTownHall,
     updatedAt: '2026-10-18',
   },
   {
@@ -244,7 +263,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '公共工程施工品質查核與年度預算工程執行。',
     ],
     contactExt: '分機 210',
-    photoUrl: '/src/assets/images/sanyi_town_hall_1793173443309.jpg',
+    photoUrl: imgTownHall,
     updatedAt: '2026-10-18',
   },
   {
@@ -260,7 +279,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '綠化苗木配發、休閒農業區輔導及野生動物保育業務。',
     ],
     contactExt: '分機 220',
-    photoUrl: '/src/assets/images/sanyi_mountain_scenery_1793173445371.jpg',
+    photoUrl: imgMountain,
     updatedAt: '2026-10-18',
   },
 
@@ -278,7 +297,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '跨課室重大政策統籌領導與指示管考。',
     ],
     contactExt: '分機 301',
-    photoUrl: '/src/assets/images/sanyi_town_hall_1793173443309.jpg',
+    photoUrl: imgTownHall,
     updatedAt: '2026-10-15',
   },
   {
@@ -294,7 +313,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '新聞發布、政令宣導文稿審查及民意代表聯繫。',
     ],
     contactExt: '分機 305',
-    photoUrl: '/src/assets/images/sanyi_town_hall_1793173443309.jpg',
+    photoUrl: imgTownHall,
     updatedAt: '2026-10-15',
   },
   {
@@ -310,7 +329,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '定期農林漁牧與人口普查各項國家統計調查執行。',
     ],
     contactExt: '分機 310',
-    photoUrl: '/src/assets/images/sanyi_civic_office_1793173446338.jpg',
+    photoUrl: imgCivicOffice,
     updatedAt: '2026-10-15',
   },
 
@@ -328,7 +347,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '調解成立書報送法院核定作業。',
     ],
     contactExt: '分機 401',
-    photoUrl: '/src/assets/images/sanyi_civic_office_1793173446338.jpg',
+    photoUrl: imgCivicOffice,
     updatedAt: '2026-10-12',
   },
   {
@@ -344,7 +363,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '檔案保存年限評估、銷毀審查及國家發展委員會考評。',
     ],
     contactExt: '分機 405',
-    photoUrl: '/src/assets/images/sanyi_town_hall_1793173443309.jpg',
+    photoUrl: imgTownHall,
     updatedAt: '2026-10-12',
   },
   {
@@ -360,7 +379,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '新進同仁職前訓練與內部教育訓練場地。',
     ],
     contactExt: '分機 522 (財行課管理員預約)',
-    photoUrl: '/src/assets/images/sanyi_civic_office_1793173446338.jpg',
+    photoUrl: imgCivicOffice,
     updatedAt: '2026-10-12',
   },
 
@@ -378,7 +397,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '公有房地產籍管理、車輛調派與油料管理。',
     ],
     contactExt: '分機 520',
-    photoUrl: '/src/assets/images/sanyi_civic_office_1793173446338.jpg',
+    photoUrl: imgCivicOffice,
     updatedAt: '2026-10-22',
   },
   {
@@ -395,7 +414,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '內部共享磁碟【Z:\\人事】各項法令規章維護與更新。',
     ],
     contactExt: '人事室分機：19(主任)、61(協辦人員)',
-    photoUrl: '/src/assets/images/sanyi_civic_office_1793173446338.jpg',
+    photoUrl: imgCivicOffice,
     updatedAt: '2026-10-22',
   },
   {
@@ -411,7 +430,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '配合經濟部推動優良市集評核與樂活名攤輔導。',
     ],
     contactExt: '分機 530 (市場管理員)',
-    photoUrl: '/src/assets/images/sanyi_town_hall_1793173443309.jpg',
+    photoUrl: imgTownHall,
     updatedAt: '2026-10-22',
   },
 
@@ -429,7 +448,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '全鄉模範父親、模範母親與績優志工頒獎典禮。',
     ],
     contactExt: '分機 522 (財行課管理員預約)',
-    photoUrl: '/src/assets/images/sanyi_mountain_scenery_1793173445371.jpg',
+    photoUrl: imgMountain,
     updatedAt: '2026-10-10',
   },
 
@@ -447,7 +466,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '颱風汛期防汛沙包、鏈鋸機具與救災器材調配。',
     ],
     contactExt: '專線 (037) 872-801 / 清潔隊部',
-    photoUrl: '/src/assets/images/sanyi_town_hall_1793173443309.jpg',
+    photoUrl: imgTownHall,
     updatedAt: '2026-10-08',
   },
   {
@@ -463,7 +482,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '假日親子講座、藝文展覽與鄉民終身學習活動。',
     ],
     contactExt: '館長室 (037) 872-090',
-    photoUrl: '/src/assets/images/sanyi_public_library_1793173444274.jpg',
+    photoUrl: imgLibrary,
     updatedAt: '2026-10-18',
   },
   {
@@ -479,7 +498,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '園區日常綠美化維護及祭拜大廳管理。',
     ],
     contactExt: '管理辦公室 (037) 874-512',
-    photoUrl: '/src/assets/images/sanyi_mountain_scenery_1793173445371.jpg',
+    photoUrl: imgMountain,
     updatedAt: '2026-10-05',
   },
   {
@@ -495,7 +514,7 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
       '公立殯葬秩序端正宣導與設施消毒清潔維護。',
     ],
     contactExt: '服務專線 (037) 875-630',
-    photoUrl: '/src/assets/images/sanyi_mountain_scenery_1793173445371.jpg',
+    photoUrl: imgMountain,
     updatedAt: '2026-10-05',
   },
 ];

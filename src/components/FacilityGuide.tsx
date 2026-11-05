@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { FacilityLocation, ViewMode } from '../types';
 import { Building2, Camera, Upload, Phone, MapPin, Search, Edit3, Check, Filter, ArrowLeft, Lock } from 'lucide-react';
 import { compressImage } from '../utils/photoStorage';
+import { resolveFacilityPhoto } from '../data/initialData';
 
 interface FacilityGuideProps {
   facilities: FacilityLocation[];
@@ -249,9 +250,13 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
             {/* Visual Photo Area */}
             <div className="relative aspect-16/9 bg-stone-100 overflow-hidden group">
               <img
-                src={activeFacility.photoUrl}
+                src={resolveFacilityPhoto(activeFacility.photoUrl)}
                 alt={`${activeFacility.floorLevel} ${formatUnitName(activeFacility.unitName)}`}
                 referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.src = '/images/sanyi_town_hall_1793173443309.jpg';
+                }}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-101"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />

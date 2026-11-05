@@ -22,6 +22,7 @@ import {
   INITIAL_FACILITIES,
   INITIAL_MYDATA_FORMS,
   DEFAULT_EMPLOYEES,
+  resolveFacilityPhoto,
 } from './data/initialData';
 import { Header } from './components/Header';
 import { IdentitySelector } from './components/IdentitySelector';
@@ -121,12 +122,13 @@ export default function App() {
     return baseFacilities.map((item: FacilityLocation) => {
       const isColumbarium = item.id === 'fac-annex-funeral-columbarium' || item.unitName?.includes('思恩堂');
       const customPhoto = customPhotos[item.id];
+      const safePhoto = resolveFacilityPhoto(customPhoto || item.photoUrl);
       return {
         ...item,
         unitName: isColumbarium ? '三義鄉納骨堂' : item.unitName,
         title: isColumbarium ? item.title?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.title : item.title,
         description: isColumbarium ? item.description?.replace(/\s*[(（]?思恩堂[)）]?/g, '').trim() || item.description : item.description,
-        photoUrl: customPhoto || item.photoUrl,
+        photoUrl: safePhoto,
       };
     });
   });
