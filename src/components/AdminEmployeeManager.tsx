@@ -875,7 +875,7 @@ export const AdminEmployeeManager: React.FC<AdminEmployeeManagerProps> = ({
                     required
                     value={facContactExt}
                     onChange={(e) => setFacContactExt(e.target.value)}
-                    placeholder="例如：分機 110 ~ 116"
+                    placeholder="例如：分機18 或 專線037-876783"
                     className="w-full px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-stone-600 font-mono"
                   />
                 </div>

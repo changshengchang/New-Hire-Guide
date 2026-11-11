@@ -126,7 +126,7 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
               <span>回上頁（報到檢核清單）</span>
             </button>
             <span className="text-xs font-medium text-amber-900 bg-amber-100/80 px-2.5 py-1 rounded-md border border-amber-200">
-              人事室分機：19(主任)、61(協辦人員)
+              人事室：分機19(主任)、分機61(協辦人員)
             </span>
           </div>
         )}
@@ -374,13 +374,38 @@ export const FacilityGuide: React.FC<FacilityGuideProps> = ({
               </div>
 
               {/* Contact Extension */}
-              <div className="pt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-600">
-                <div className="flex items-center gap-1.5">
-                  <Phone className="w-4 h-4 text-stone-400" />
-                  <span className="font-medium text-stone-800">公所代表總機：</span>
-                  <span>(037) 872-801 · {activeFacility.contactExt}</span>
+              <div className="pt-4 border-t border-stone-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-stone-600">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Phone className="w-4 h-4 text-stone-400 shrink-0" />
+                  {activeFacility.contactExt === '暫無' ? (
+                    <>
+                      <span className="font-medium text-stone-800">公所代表總機：</span>
+                      <span>(037) 872-801</span>
+                      <span className="px-2 py-0.5 text-[11px] font-medium text-stone-500 bg-stone-100 rounded border border-stone-200">
+                        暫無獨立分機（由總機協助聯繫）
+                      </span>
+                    </>
+                  ) : activeFacility.contactExt?.startsWith('專線') ? (
+                    <>
+                      <span className="font-medium text-stone-800">直撥專線：</span>
+                      <span className="font-bold text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200 font-mono text-xs">
+                        {activeFacility.contactExt.replace(/^專線/, '')}
+                      </span>
+                      <span className="text-stone-400 text-[11px]">
+                        （公所代表總機：037-872801）
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-medium text-stone-800">公所代表總機：</span>
+                      <span>(037) 872-801 · </span>
+                      <span className="font-bold text-stone-900 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">
+                        {activeFacility.contactExt}
+                      </span>
+                    </>
+                  )}
                 </div>
-                <span className="text-stone-400 font-mono text-[11px]">
+                <span className="text-stone-400 font-mono text-[11px] shrink-0">
                   相片更新：{activeFacility.updatedAt}
                 </span>
               </div>

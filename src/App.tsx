@@ -94,7 +94,21 @@ export default function App() {
   const [forms, setForms] = useState<ReportForm[]>(() => {
     try {
       const saved = localStorage.getItem('sanyi_forms');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: ReportForm[] = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((f) => {
+            if (f.id === 'form-1' || f.title.includes('簡歷與基本資料表')) {
+              return {
+                ...f,
+                title: '三義鄉公所到職單',
+                fileName: f.fileName.includes('履歷建檔表') ? '三義鄉公所到職單.docx' : f.fileName,
+              };
+            }
+            return f;
+          });
+        }
+      }
     } catch (e) {
       console.error(e);
     }
@@ -141,19 +155,35 @@ export default function App() {
       let responsibilities = initItem.responsibilities;
       let updatedAt = initItem.updatedAt;
 
+      const isOfficialUpdateUnit = [
+        'fac-1f-minzheng',
+        'fac-5f-caixing',
+        'fac-2f-jianshe',
+        'fac-annex-b2-1f-shehui',
+        'fac-2f-guanguang',
+      ].includes(initItem.id);
+
       if (existing) {
         if (existing.photoUrl) photoUrl = existing.photoUrl;
         if (existing.unitName) unitName = existing.unitName;
         if (existing.title) title = existing.title;
-        if (existing.description) description = existing.description;
-        if (existing.contactExt) contactExt = existing.contactExt;
-        if (
-          existing.responsibilities &&
-          Array.isArray(existing.responsibilities) &&
-          existing.responsibilities.length > 0
-        ) {
-          responsibilities = existing.responsibilities;
+        // Always enforce the latest official contact extensions provided by the office
+        contactExt = initItem.contactExt;
+
+        if (isOfficialUpdateUnit) {
+          description = initItem.description;
+          responsibilities = initItem.responsibilities;
+        } else {
+          if (existing.description) description = existing.description;
+          if (
+            existing.responsibilities &&
+            Array.isArray(existing.responsibilities) &&
+            existing.responsibilities.length > 0
+          ) {
+            responsibilities = existing.responsibilities;
+          }
         }
+
         if (existing.updatedAt) updatedAt = existing.updatedAt;
       }
 

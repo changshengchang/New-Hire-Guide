@@ -78,29 +78,29 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
         </div>
 
         {/* Tab Filters */}
-        <div className="flex items-center gap-2 mt-5 pt-4 border-t border-stone-100">
+        <div className="flex items-center gap-2 mt-5 pt-4 border-t border-stone-100 flex-wrap">
           <button
             onClick={() => setPersonnelType('new_exam')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 text-sm sm:text-base font-bold rounded-lg transition-colors cursor-pointer ${
               isExam
-                ? 'bg-stone-900 text-white font-semibold'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100 border border-stone-200'
             }`}
           >
-            <Award className="w-3.5 h-3.5" />
-            <span>考試分發初任人員必備 ({documents.filter((d) => d.requiredFor === 'new_exam').length} 項)</span>
+            <Award className="w-4 h-4 text-amber-400" />
+            <span>考試分發初任人員必備 ({documents.filter((d) => d.requiredFor === 'both' || d.requiredFor === 'new_exam').length} 項)</span>
           </button>
 
           <button
             onClick={() => setPersonnelType('transfer')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 text-sm sm:text-base font-bold rounded-lg transition-colors cursor-pointer ${
               !isExam
-                ? 'bg-stone-900 text-white font-semibold'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                ? 'bg-stone-900 text-white shadow-xs'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100 border border-stone-200'
             }`}
           >
-            <ArrowLeftRight className="w-3.5 h-3.5" />
-            <span>調任人員必備 ({documents.filter((d) => d.requiredFor === 'transfer').length} 項)</span>
+            <ArrowLeftRight className="w-4 h-4 text-emerald-400" />
+            <span>調任人員必備 ({documents.filter((d) => d.requiredFor === 'both' || d.requiredFor === 'transfer').length} 項)</span>
           </button>
         </div>
       </div>
@@ -115,7 +115,7 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
           return (
             <div
               key={doc.id}
-              className={`bg-white border rounded-xl p-5 transition-all shadow-xs ${
+              className={`bg-white border-2 rounded-2xl p-5 sm:p-6 transition-all shadow-xs ${
                 isPrepared
                   ? 'border-emerald-300 bg-emerald-50/20'
                   : isNotNeeded
@@ -124,23 +124,25 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
               }`}
             >
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-3.5">
                   {/* Status Indicator Icon */}
-                  <div className="mt-0.5 shrink-0">
+                  <div className="mt-1 shrink-0">
                     {isPrepared ? (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-600 fill-emerald-50" />
+                      <CheckCircle2 className="w-6 h-6 text-emerald-600 fill-emerald-50" />
                     ) : isNotNeeded ? (
-                      <MinusCircle className="w-5 h-5 text-stone-400" />
+                      <MinusCircle className="w-6 h-6 text-stone-400" />
                     ) : (
-                      <Circle className="w-5 h-5 text-amber-500" />
+                      <Circle className="w-6 h-6 text-amber-500" />
                     )}
                   </div>
 
                   <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="font-mono text-xs text-stone-400">0{idx + 1}.</span>
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                      <span className="font-mono text-sm sm:text-base font-bold text-stone-400">
+                        0{idx + 1}.
+                      </span>
                       <h3
-                        className={`text-base font-semibold ${
+                        className={`text-lg sm:text-xl font-bold ${
                           isPrepared
                             ? 'text-emerald-950'
                             : isNotNeeded
@@ -150,47 +152,49 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
                       >
                         {doc.name}
                       </h3>
-                      <span className="text-xs text-stone-400">·</span>
-                      <span className="text-xs text-stone-600">核發單位：{doc.issuingUnit}</span>
+                      <span className="text-sm text-stone-300">·</span>
+                      <span className="text-xs sm:text-sm text-stone-600 font-medium">
+                        核發單位：{doc.issuingUnit}
+                      </span>
                     </div>
 
                     <p
-                      className={`text-sm leading-relaxed mb-3 ${
-                        isNotNeeded ? 'text-stone-400' : 'text-stone-700'
+                      className={`text-base sm:text-lg leading-relaxed mb-3.5 ${
+                        isNotNeeded ? 'text-stone-400' : 'text-stone-800'
                       }`}
                     >
                       {doc.description}
                     </p>
 
-                    <div className="bg-stone-50 border border-stone-200/80 rounded-lg p-3 text-xs text-stone-600 flex items-start gap-2">
+                    <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-3.5 text-sm text-stone-700 flex items-start gap-2.5">
                       <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-stone-800">人事室提醒：</strong>
-                        <span>{doc.notes}</span>
+                        <strong className="text-stone-900 font-bold">人事室提醒：</strong>
+                        <span className="leading-relaxed">{doc.notes}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* 3-State Toggle Segmented Control (已備齊 / 待準備 / 本項無需要) */}
-                <div className="shrink-0 flex items-center p-1 bg-stone-100 rounded-lg border border-stone-200 self-end md:self-start">
+                <div className="shrink-0 flex items-center p-1 bg-stone-100 rounded-xl border border-stone-200 self-end md:self-start">
                   <button
                     onClick={() => onChangeDocStatus(doc.id, 'prepared')}
-                    className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm rounded-lg transition-all cursor-pointer ${
                       isPrepared
-                        ? 'bg-emerald-600 text-white shadow-xs font-semibold'
+                        ? 'bg-emerald-600 text-white shadow-xs font-bold'
                         : 'text-stone-600 hover:text-stone-900 hover:bg-stone-200/60'
                     }`}
                   >
-                    <Check className="w-3 h-3" />
+                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>已備齊</span>
                   </button>
 
                   <button
                     onClick={() => onChangeDocStatus(doc.id, 'pending')}
-                    className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm rounded-lg transition-all cursor-pointer ${
                       currentStatus === 'pending'
-                        ? 'bg-white text-stone-900 shadow-xs font-semibold'
+                        ? 'bg-white text-stone-900 shadow-xs font-bold'
                         : 'text-stone-600 hover:text-stone-900 hover:bg-stone-200/60'
                     }`}
                   >
@@ -199,13 +203,13 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
 
                   <button
                     onClick={() => onChangeDocStatus(doc.id, 'not_needed')}
-                    className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm rounded-lg transition-all cursor-pointer ${
                       isNotNeeded
-                        ? 'bg-stone-700 text-white shadow-xs font-semibold'
+                        ? 'bg-stone-700 text-white shadow-xs font-bold'
                         : 'text-stone-600 hover:text-stone-900 hover:bg-stone-200/60'
                     }`}
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>本項無需要</span>
                   </button>
                 </div>
@@ -215,21 +219,33 @@ export const DocumentsView: React.FC<DocumentsViewProps> = ({
         })}
       </div>
 
-      {/* Helpful Public Sector Tips Box */}
-      <div className="bg-stone-100 border border-stone-200 rounded-xl p-5 text-xs text-stone-700 space-y-3">
-        <h4 className="text-sm font-semibold text-stone-900 flex items-center gap-1.5">
-          <AlertCircle className="w-4 h-4 text-stone-700" />
+      {/* Helpful Public Sector Tips Box - Enlarged for Superior Readability */}
+      <div className="bg-gradient-to-br from-amber-50/90 via-white to-stone-50 border-2 border-amber-300 rounded-2xl p-6 sm:p-7 shadow-xs">
+        <h4 className="text-base sm:text-lg font-bold text-stone-950 flex items-center gap-2 mb-3.5">
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
           <span>公所人事室貼心查驗備註</span>
         </h4>
-        <ul className="list-disc list-inside space-y-1.5 leading-relaxed text-stone-600">
-          <li>
-            <strong>本項無需要判定：</strong>例如無曾任公家機關約聘僱年資者、或無其他專長語言證照之初任同仁，可將該項目標記為<strong>「本項無需要」</strong>，系統將不列為缺漏文件。
+        <ul className="space-y-3 text-sm sm:text-base leading-relaxed text-stone-800">
+          <li className="flex items-start gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-amber-500 mt-2 shrink-0" />
+            <div>
+              <strong className="text-stone-950 font-bold">本項無需要判定：</strong>
+              <span>例如無曾任公家機關約聘僱年資者、或無其他專長語言證照之初任同仁，可將該項目標記為<strong className="text-stone-950 font-bold">「本項無需要」</strong>，系統將不列為缺漏文件。</span>
+            </div>
           </li>
-          <li>
-            <strong>戶籍謄本電子申辦：</strong>新進同仁若無現成戶口名簿，可使用自然人憑證登入「內政部戶政司全球資訊網」，免費線上申請「現戶全戶電子戶籍謄本」（具電子簽章有效防偽）。
+          <li className="flex items-start gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-amber-500 mt-2 shrink-0" />
+            <div>
+              <strong className="text-stone-950 font-bold">戶籍謄本電子申辦：</strong>
+              <span>新進同仁若無現成戶口名簿，可使用自然人憑證登入「內政部戶政司全球資訊網」，免費線上申請「現戶全戶電子戶籍謄本」（具電子簽章有效防偽）。</span>
+            </div>
           </li>
-          <li>
-            <strong>調任人員銜補單：</strong>原機關人事室所開立之銜補單請保持密封完整交予本所人事室，裡面包含公保退撫扣繳基數、出勤及特休日數，若遺漏將影響新月份薪資撥付與休假權利。
+          <li className="flex items-start gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-amber-500 mt-2 shrink-0" />
+            <div>
+              <strong className="text-stone-950 font-bold">調任人員銜補單：</strong>
+              <span>原機關人事室所開立之銜補單請保持密封完整交予本所人事室，裡面包含公保退撫扣繳基數、出勤及特休日數，若遺漏將影響新月份薪資撥付與休假權利。</span>
+            </div>
           </li>
         </ul>
       </div>
