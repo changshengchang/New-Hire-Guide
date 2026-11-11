@@ -54,7 +54,26 @@ export default function App() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.map((emp: EmployeeProfile) => {
+            const cleanMyData = INITIAL_MYDATA_FORMS.map((initForm) => {
+              const matched = emp.myDataForms?.find(
+                (f) =>
+                  f.id === initForm.id ||
+                  (initForm.title.includes('誓言') && f.title?.includes('誓言')) ||
+                  (initForm.title.includes('經營商業') && f.title?.includes('經營商業')) ||
+                  (initForm.title.includes('中國大陸') && f.title?.includes('中國大陸')) ||
+                  (initForm.title.includes('擬任人員具結書') && f.title?.includes('擬任人員具結書'))
+              );
+              return {
+                ...initForm,
+                isSubmitted: matched ? Boolean(matched.isSubmitted) : false,
+              };
+            });
+            return {
+              ...emp,
+              myDataForms: cleanMyData,
+            };
+          });
         }
       }
     } catch (e) {

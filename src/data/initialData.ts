@@ -54,7 +54,7 @@ export const INITIAL_CHECKLIST: ChecklistItem[] = [
     id: 'chk-mydata-1',
     title: '至公務人員個人資料服務網 (MyData) 完成線上具結',
     category: 'MyData申報',
-    description: '填寫擬任人員具結書、誓言（初任）、兼職調查表及未設籍大陸具結書等4大表件。',
+    description: '填寫公務人員服務誓言（初任）、擬任人員具結書、兼職情形調查表及未設籍大陸具結書等法定申報表件。',
     requiredFor: 'both',
     completed: false,
     priority: '必辦',
@@ -170,7 +170,7 @@ export const INITIAL_FORMS: ReportForm[] = [
     id: 'form-affidavit',
     title: '公務員到職填寫各類具結書',
     category: '人事基本資料',
-    description: '包含擬任人員具結書、公務人員服務誓言（初任人員）、經營商業及兼職情形調查表、未在中國大陸設籍具結書等整合成套必備表件。',
+    description: '包含公務人員服務誓言（初任人員）、擬任人員具結書、經營商業及兼職情形調查表、未在中國大陸設籍具結書等整合成套必備表件。',
     fileName: '公務員到職填寫各類具結書.docx',
     fileSize: '88.5 KB',
     uploadDate: '2026-10-28',
@@ -530,8 +530,21 @@ export const INITIAL_FACILITIES: FacilityLocation[] = [
 
 export const INITIAL_MYDATA_FORMS: MyDataFormItem[] = [
   {
+    id: 'mydata-oath',
+    title: '1. 公務人員服務誓言',
+    targetRole: 'new_exam',
+    description: '考試及格初任公務人員報到時必須簽署之莊嚴承諾，恪遵憲法、效忠國家、榮譽任事。',
+    legalBasis: '公務員服務法第十八條及宣誓條例規定',
+    keyPoints: [
+      '「余誓以至誠，恪遵憲法，效忠國家，奉行法令，廉潔自持，不浪費公帑，恪盡職責...」',
+      '初任同仁請詳閱誓言文字後於 MyData 簽署確認。',
+      '調任同仁已於初任機關宣誓過，本項免再填寫。',
+    ],
+    isSubmitted: false,
+  },
+  {
     id: 'mydata-1',
-    title: '1. 擬任人員具結書',
+    title: '2. 擬任人員具結書',
     targetRole: 'both',
     description: '依公務人員任用法第28條規定具結未具有雙重國籍、受監護宣告、曾服公務有貪污行為判決確定等不得任用情事。',
     legalBasis: '公務人員任用法第二十八條各款規定',
@@ -545,19 +558,6 @@ export const INITIAL_MYDATA_FORMS: MyDataFormItem[] = [
   },
   {
     id: 'mydata-2',
-    title: '2. 公務人員服務誓言 (考試分發初任人員適用)',
-    targetRole: 'new_exam',
-    description: '考試及格初任公務人員報到時必須簽署之莊嚴承諾，恪遵憲法、效忠國家、榮譽任事。',
-    legalBasis: '公務員服務法第十八條及宣誓條例規定',
-    keyPoints: [
-      '「余誓以至誠，恪遵憲法，效忠國家，奉行法令，廉潔自持，不浪費公帑，恪盡職責...」',
-      '初任同仁請詳閱誓言文字後於 MyData 簽署確認。',
-      '調任同仁已於初任機關宣誓過，本項免再填寫。',
-    ],
-    isSubmitted: false,
-  },
-  {
-    id: 'mydata-3',
     title: '3. 經營商業及兼職情形調查表 (區分初任及現職二類)',
     targetRole: 'both',
     description: '依法填報有無經營商業、投資營利事業股份（是否超過10%）、非營利法人兼職或兼課情事。',
@@ -571,7 +571,7 @@ export const INITIAL_MYDATA_FORMS: MyDataFormItem[] = [
     isSubmitted: false,
   },
   {
-    id: 'mydata-4',
+    id: 'mydata-3',
     title: '4. 【擬任人員未在中國大陸設有戶籍、領用中國大陸護照、身分證、定居證或居住證具結書】',
     targetRole: 'both',
     description: '切結未在中國大陸地區設有戶籍、領用大陸護照、居民身分證或各類居住證明。',

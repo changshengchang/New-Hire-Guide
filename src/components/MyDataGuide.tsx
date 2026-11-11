@@ -85,7 +85,7 @@ export const MyDataGuide: React.FC<MyDataGuideProps> = ({
         </div>
       </div>
 
-      {/* 4 Core Forms List */}
+      {/* 法定表件清單 (3大具結表件) */}
       <div className="space-y-4">
         {relevantForms.map((item, index) => {
           return (
@@ -119,7 +119,7 @@ export const MyDataGuide: React.FC<MyDataGuideProps> = ({
                           item.isSubmitted ? 'text-emerald-950' : 'text-stone-900'
                         }`}
                       >
-                        {item.title}
+                        {`${index + 1}. ${item.title.replace(/^[0-9]+\.\s*/, '')}`}
                       </h3>
 
                       {item.targetRole === 'new_exam' && (

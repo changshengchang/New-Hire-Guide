@@ -243,18 +243,21 @@ export const PrintReceiptModal: React.FC<PrintReceiptModalProps> = ({
               三、公務人員個人資料服務網 (MyData) 法定表件線上填報
             </h4>
             <div className="space-y-1.5 text-xs">
-              {relevantMyData.map((form) => (
-                <div key={form.id} className="flex items-start gap-2">
-                  {form.isSubmitted ? (
-                    <CheckSquare className="w-4 h-4 text-stone-900 mt-0.5 shrink-0" />
-                  ) : (
-                    <Square className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
-                  )}
-                  <span>
-                    {form.title} — {form.isSubmitted ? '已於線上填報並回復' : '待線上回復'}
-                  </span>
-                </div>
-              ))}
+              {relevantMyData.map((form, index) => {
+                const cleanTitle = form.title.replace(/^[0-9]+\.\s*/, '');
+                return (
+                  <div key={form.id} className="flex items-start gap-2">
+                    {form.isSubmitted ? (
+                      <CheckSquare className="w-4 h-4 text-stone-900 mt-0.5 shrink-0" />
+                    ) : (
+                      <Square className="w-4 h-4 text-stone-400 mt-0.5 shrink-0" />
+                    )}
+                    <span>
+                      {index + 1}. {cleanTitle} — {form.isSubmitted ? '已於線上填報並回復' : '待線上回復'}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

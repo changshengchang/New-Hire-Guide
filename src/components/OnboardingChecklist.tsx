@@ -187,12 +187,12 @@ export const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
           className="bg-white border-2 border-teal-200 rounded-xl p-5 hover:border-teal-400 hover:bg-teal-50/30 transition-all cursor-pointer shadow-xs group"
         >
           <div className="text-xs font-bold text-teal-700 mb-1 flex items-center justify-between">
-            <span>法定申報與誓言</span>
+            <span>法定表件申報</span>
             <span className="text-teal-400 group-hover:translate-x-1 transition-transform">→</span>
           </div>
-          <h3 className="text-base font-bold text-teal-950 mb-2">MyData 4大表件線上回復</h3>
+          <h3 className="text-base font-bold text-teal-950 mb-2">MyData 法定表件線上回復</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
-            包括擬任具結書、服務誓言（初任）、兼職調查表及未設籍大陸具結書線上查核。
+            包括擬任人員具結書、經營商業及兼職調查表、未設籍大陸具結書線上查核。
           </p>
         </div>
 
